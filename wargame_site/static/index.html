@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur d'image avec HTML</title>
+    <style>
+        .thumbnail-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .thumbnail-container .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .thumbnail-container:hover .delete-btn {
+            display: flex;
+        }
+        body {
+            margin: 0;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+        }
+
+        .column {
+            padding: 10px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        #imageGrid img {
+            max-width: 80px;
+            height: auto;
+            margin: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        #imageGrid img.selected {
+            border-color: #ff0000;
+            transform: scale(1.05);
+        }
+
+        #previewContainer {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        #highlightBox {
+            position: absolute;
+            border: 2px solid red;
+            display: none;
+        }
+
+        #htmlPreview {
+            font-family: 'Times New Roman', serif;
+            font-size: 14px;
+            word-wrap: break-word;
+            overflow: hidden;
+            text-align: justify;
+            color: initial;
+            background-color: transparent;
+        }
+
+        #htmlPreview p:first-of-type {
+            margin-top: 0;
+        }
+
+        #htmlPreview p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        #htmlRawBox {
+            white-space: pre-wrap;
+            background: #fefefe;
+            padding: 10px;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            overflow: auto;
+            max-height: 60vh;
+            border-radius: 4px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #finalPreview img {
+            max-width: 100%;
+            margin-top: 10px;
+            border: 1px solid #aaa;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .download-all {
+            margin-top: 10px;
+            display: block;
+        }
+
+        .button-row button,
+        .download-all {
+            padding: 10px 18px;
+            font-weight: bold;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #1976d2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .button-row button:hover,
+        .download-all:hover {
+            background-color: #1565c0;
+        }
+
+        /* --- THEME WARGAME --- */
+        body {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        .column {
+            background-color: #2c2c2c;
+            border-right: 1px solid #444;
+        }
+
+        input[type="file"] {
+            background-color: #333;
+            color: #ccc;
+            border: 1px solid #555;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        #htmlRawBox {
+            background: #1c1c1c;
+            color: #c0c0c0;
+            border-color: #555;
+        }
+
+        #previewContainer {
+            border: 1px solid #444;
+            background-color: #111;
+        }
+
+        .button-row button,
+        .download-all {
+            background-color: #8b0000;
+            color: #fff;
+        }
+
+        .button-row button:hover,
+        .download-all:hover {
+            background-color: #a60000;
+        }
+
+        #imageGrid img.selected {
+            border-color: #ff0000;
+        }
+
+        .horizontal-strip {
+            display: flex;
+            flex-direction: row-reverse;
+
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            resize: vertical;
+            min-height: 120px;
+            max-height: 60vh;
+            height: 200px;
+            background-color: #111;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding: 10px;
+            border-top: 2px solid #444;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .horizontal-strip img {
+            height: 100%;
+            margin-right: 10px;
+            border: 2px solid #666;
+            border-radius: 4px;
+            object-fit: contain;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 6px solid #ccc;
+            border-top-color: #e60000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        body.loading::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+        }
+
+        .loader-text {
+            color: #fff;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #000;
+        }
+        .thumbnail-container {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .horizontal-strip {
+            display: flex;
+            flex-direction: row-reverse;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            align-items: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .horizontal-strip .thumbnail-container {
+            flex: 0 0 auto;
+            margin-right: 10px;
+        }
+
+        .horizontal-strip img {
+            height: 180px;
+            width: auto;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        #htmlPreview p {
+            margin-top: var(--p-margin, 10px);
+            margin-bottom: var(--p-margin, 10px);
+        }
+
+        #imageGrid {
+            padding-bottom: 220px; /* hauteur de la .horizontal-strip + marge */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+</head>
+<body>
+<div class="column">
+    <input type="file" id="imageUpload" accept="image/*" multiple><br><br>
+    <p id="gridCounter" style="font-size: 14px; color: #aaa;"></p>
+    <div id="imageGrid"></div>
+</div>
+<div class="column">
+    <p id="currentFilename" style="text-align: center; font-size: 14px; color: #aaa; margin: 6px 0;"></p>
+    <div id="previewContainer">
+        <div id="highlightBox">
+            <div id="htmlPreview"></div>
+        </div>
+    </div>
+    <div class="button-row">
+        <button onclick="resetSelection()">♻️ Réinitialiser</button>
+        <button onclick="downloadPreview()">💾 Exporter</button>
+        <button onclick="saveAndNext()">📸 Valider</button>
+    </div>
+    <button class="download-all" onclick="downloadAllImages()">📥 Télécharger toutes les images</button>
+    <div id="finalPreview" class="horizontal-strip"></div>
+</div>
+<div class="column">
+    <input type="file" id="htmlUpload" accept=".html" multiple><br><br>
+    <div id="htmlRawBox" contenteditable="true"></div>
+    <button onclick="adjustParagraphMargin(1)">➕ Marge</button>
+    <button onclick="adjustParagraphMargin(-1)">➖ Marge</button>
+</div>
+<script>
+
+    let paragraphMargin = 10;
+    function adjustParagraphMargin(delta) {
+        paragraphMargin = Math.max(0, paragraphMargin + delta);
+        document.documentElement.style.setProperty('--p-margin', `${paragraphMargin}px`);
+    }
+
+    function resetSelection() {
+        highlightBox.style.display = 'none';
+        highlightBox.style.left = '0px';
+        highlightBox.style.top = '0px';
+        highlightBox.style.width = '0px';
+        highlightBox.style.height = '0px';
+        htmlPreview.innerHTML = '';
+    }
+
+    let images = [];
+    let htmlFiles = [];
+    let currentIndex = 0;
+    let savedImages = [];
+    let selection = {startX: 0, startY: 0, width: 0, height: 0};
+    const imageGrid = document.getElementById('imageGrid');
+    const preview = document.getElementById('previewContainer');
+    const highlightBox = document.getElementById('highlightBox');
+    const htmlPreview = document.getElementById('htmlPreview');
+    const htmlRawBox = document.getElementById('htmlRawBox');
+    const finalPreview = document.getElementById('finalPreview');
+
+    htmlRawBox.addEventListener('input', () => {
+        htmlPreview.innerHTML = htmlRawBox.textContent;
+        adjustFontSizeToFit();
+    });
+
+    document.getElementById('imageUpload').addEventListener('change', (e) => {
+        images = Array.from(e.target.files);
+        renderImageGrid();
+    });
+
+    document.getElementById('htmlUpload').addEventListener('change', (e) => {
+        htmlFiles = Array.from(e.target.files);
+        displayRawHtml(0);
+    });
+
+    function renderImageGrid() {
+        imageGrid.innerHTML = '';
+        images.forEach((file, idx) => {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.onclick = () => switchToIndex(idx);
+            img.dataset.index = idx;
+            img.title = file.name;
+            imageGrid.appendChild(img);
+        });
+        if (images.length) switchToIndex(0);
+    }
+
+    function highlightSelectedImage() {
+        const imgs = imageGrid.querySelectorAll('img');
+        imgs.forEach(img => img.classList.remove('selected'));
+        const selected = imageGrid.querySelector(`img[data-index='${currentIndex}']`);
+        if (selected) selected.classList.add('selected');
+        document.getElementById('gridCounter').textContent = `${currentIndex + 1} / ${images.length}`;
+    }
+
+    function switchToIndex(idx) {
+        currentIndex = idx;
+
+        // Réinitialiser la zone de sélection
+        highlightBox.style.display = 'none';
+        highlightBox.style.left = '0px';
+        highlightBox.style.top = '0px';
+        highlightBox.style.width = '0px';
+        highlightBox.style.height = '0px';
+        htmlPreview.innerHTML = '';
+
+        const img = new Image();
+        img.onload = () => {
+            preview.style.width = img.width + 'px';
+            preview.style.height = img.height + 'px';
+        };
+        const url = URL.createObjectURL(images[idx]);
+        img.src = url;
+        preview.style.backgroundImage = `url('${url}')`;
+        displayRawHtml(idx % htmlFiles.length);
+        highlightSelectedImage();
+
+        document.getElementById('currentFilename').textContent = images[idx]?.name || '';
+    }
+
+    function displayRawHtml(idx) {
+        if (!htmlFiles[idx]) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            htmlRawBox.textContent = reader.result;
+            htmlPreview.innerHTML = reader.result;
+            adjustFontSizeToFit();
+        };
+        reader.readAsText(htmlFiles[idx]);
+        document.documentElement.style.setProperty('--p-margin', `${paragraphMargin}px`);
+    }
+
+    preview.addEventListener('mousedown', (e) => {
+        const img = new Image();
+        img.src = preview.style.backgroundImage.slice(5, -2);
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(0, 0, 22, 22);
+            let r = 0, g = 0, b = 0;
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                r += imageData.data[i];
+                g += imageData.data[i + 1];
+                b += imageData.data[i + 2];
+            }
+            const pixelCount = imageData.data.length / 4;
+            r = Math.round(r / pixelCount);
+            g = Math.round(g / pixelCount);
+            b = Math.round(b / pixelCount);
+            highlightBox.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        };
+
+        const rect = preview.getBoundingClientRect();
+        selection.startX = e.clientX - rect.left;
+        selection.startY = e.clientY - rect.top;
+
+        function onMouseMove(ev) {
+            const currX = ev.clientX - rect.left;
+            const currY = ev.clientY - rect.top;
+            const x = Math.min(selection.startX, currX);
+            const y = Math.min(selection.startY, currY);
+            const w = Math.abs(currX - selection.startX);
+            const h = Math.abs(currY - selection.startY);
+
+            Object.assign(highlightBox.style, {
+                left: `${x}px`,
+                top: `${y}px`,
+                width: `${w}px`,
+                height: `${h}px`,
+                display: 'block'
+            });
+            adjustFontSizeToFit();
+        }
+
+        function onMouseUp() {
+            preview.removeEventListener('mousemove', onMouseMove);
+            preview.removeEventListener('mouseup', onMouseUp);
+        }
+
+        preview.addEventListener('mousemove', onMouseMove);
+        preview.addEventListener('mouseup', onMouseUp);
+    });
+
+    function adjustFontSizeToFit() {
+        if (!highlightBox.offsetWidth || !highlightBox.offsetHeight) return;
+        const container = highlightBox;
+        let fontSize = 14;
+        htmlPreview.style.fontSize = fontSize + 'px';
+        htmlPreview.style.width = '100%';
+        htmlPreview.style.height = 'auto';
+
+        while (htmlPreview.scrollHeight > container.clientHeight && fontSize > 6) {
+            fontSize--;
+            htmlPreview.style.fontSize = fontSize + 'px';
+        }
+    }
+
+    function downloadPreview() {
+        const originalBorder = highlightBox.style.border;
+        const originalBg = highlightBox.style.backgroundColor;
+
+        highlightBox.style.border = 'none';
+
+        html2canvas(preview).then(canvas => {
+            highlightBox.style.border = originalBorder;
+            highlightBox.style.backgroundColor = originalBg;
+
+            const link = document.createElement('a');
+            link.download = 'preview.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
+
+    function saveAndNext() {
+        const wasVisible = highlightBox.style.display;
+        const originalBorder = highlightBox.style.border;
+
+        highlightBox.style.border = 'none';
+
+        html2canvas(preview).then(canvas => {
+            highlightBox.style.border = originalBorder;
+            highlightBox.style.display = wasVisible;
+
+            const dataUrl = canvas.toDataURL();
+            savedImages.push({ dataUrl, filename: images[currentIndex].name });
+            const container = document.createElement('div');
+            container.className = 'thumbnail-container';
+
+            const img = document.createElement('img');
+            img.title = images[currentIndex].name;
+            img.src = dataUrl;
+            container.appendChild(img);
+
+            const btn = document.createElement('button');
+            btn.textContent = '🗑️';
+            btn.className = 'delete-btn';
+            btn.onclick = () => {
+                finalPreview.removeChild(container);
+                const idx = savedImages.findIndex(item => item.dataUrl === dataUrl);
+                if (idx !== -1) savedImages.splice(idx, 1);
+            };
+            container.appendChild(btn);
+
+            finalPreview.appendChild(container);
+
+            currentIndex++;
+            if (currentIndex < images.length) {
+                switchToIndex(currentIndex);
+            }
+        });
+    }
+
+    function downloadAllImages() {
+        const zip = new JSZip();
+
+        savedImages.forEach(({ dataUrl, filename }) => {
+            const base64Data = dataUrl.split(',')[1];
+            zip.file(filename, base64Data, { base64: true });
+        });
+
+        zip.generateAsync({type: "blob"}).then(function (content) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = "images.zip";
+            link.click();
+        });
+    }
+
+    let isLoading = false;
+
+    // Ajouter un élément loader visuel
+    const loader = document.createElement('div');
+    loader.innerHTML = `<div class="spinner"></div><div class="loader-text">Veuillez patienter…</div>`;
+    loader.style.position = 'absolute';
+    loader.style.top = '50%';
+    loader.style.left = '50%';
+    loader.style.transform = 'translate(-50%, -50%)';
+    loader.style.zIndex = '999';
+    loader.style.display = 'none';
+    document.body.appendChild(loader);
+
+    // Écouteur ENTER
+    document.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter' && highlightBox.style.display === 'block' && !isLoading) {
+            isLoading = true;
+            loader.style.display = 'block';
+
+            // Appliquer un fond semi-transparent flou
+            document.body.classList.add('loading');
+
+            // Désactiver tous les boutons et images cliquables
+            document.querySelectorAll('button, input, #imageGrid img').forEach(el => {
+                el.disabled = true;
+                el.style.pointerEvents = 'none';
+                el.style.opacity = '0.5';
+            });
+
+            // Capturer la zone sélectionnée
+            const rect = highlightBox.getBoundingClientRect();
+            const previewRect = preview.getBoundingClientRect();
+            const canvas = document.createElement('canvas');
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            const ctx = canvas.getContext('2d');
+
+            const fullCanvas = document.createElement('canvas');
+            fullCanvas.width = previewRect.width;
+            fullCanvas.height = previewRect.height;
+            const fullCtx = fullCanvas.getContext('2d');
+
+            const img = new Image();
+            img.src = preview.style.backgroundImage.slice(5, -2);
+            await new Promise(res => {
+                img.onload = () => {
+                    fullCtx.drawImage(img, 0, 0, fullCanvas.width, fullCanvas.height);
+                    const imgData = fullCtx.getImageData(rect.left - previewRect.left, rect.top - previewRect.top, rect.width, rect.height);
+                    canvas.getContext('2d').putImageData(imgData, 0, 0);
+                    res();
+                };
+            });
+
+            const dataUrl = canvas.toDataURL("image/png");
+
+            // Envoi à l'API Flask
+            const res = await fetch('/translate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({image_base64: dataUrl})
+            });
+
+            const result = await res.json();
+            const html = result.html;
+
+            htmlRawBox.textContent = html;
+            htmlPreview.innerHTML = html;
+            window.getSelection()?.removeAllRanges();
+
+            adjustFontSizeToFit();
+            loader.style.display = 'none';
+            document.body.classList.remove('loading');
+
+            // Réactiver tous les boutons et images cliquables
+            document.querySelectorAll('button, input, #imageGrid img').forEach(el => {
+                el.disabled = false;
+                el.style.pointerEvents = '';
+                el.style.opacity = '1';
+            });
+
+            isLoading = false;
+        }
+    });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+    let isLoading = false;
+
+    // Ajouter un élément loader visuel
+    const loader = document.createElement('div');
+    loader.textContent = "⏳ Traitement en cours...";
+    loader.style.position = 'absolute';
+    loader.style.top = '50%';
+    loader.style.left = '50%';
+    loader.style.transform = 'translate(-50%, -50%)';
+    loader.style.backgroundColor = 'white';
+    loader.style.padding = '10px';
+    loader.style.border = '1px solid #aaa';
+    loader.style.zIndex = '999';
+    loader.style.display = 'none';
+    document.body.appendChild(loader);
+
+    // Écouteur ENTER
+    document.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter' && highlightBox.style.display === 'block' && !isLoading) {
+            isLoading = true;
+            loader.style.display = 'block';
+
+            // Capturer la zone sélectionnée
+            const rect = highlightBox.getBoundingClientRect();
+            const previewRect = preview.getBoundingClientRect();
+            const canvas = document.createElement('canvas');
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            const ctx = canvas.getContext('2d');
+
+            const fullCanvas = document.createElement('canvas');
+            fullCanvas.width = previewRect.width;
+            fullCanvas.height = previewRect.height;
+            const fullCtx = fullCanvas.getContext('2d');
+
+            const img = new Image();
+            img.src = preview.style.backgroundImage.slice(5, -2);
+            await new Promise(res => {
+                img.onload = () => {
+                    fullCtx.drawImage(img, 0, 0, fullCanvas.width, fullCanvas.height);
+                    const imgData = fullCtx.getImageData(rect.left - previewRect.left, rect.top - previewRect.top, rect.width, rect.height);
+                    canvas.getContext('2d').putImageData(imgData, 0, 0);
+                    res();
+                };
+            });
+
+            const dataUrl = canvas.toDataURL("image/png");
+
+            // Envoi à l'API Flask
+            const res = await fetch('/translate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({image_base64: dataUrl})
+            });
+
+            const result = await res.json();
+            const html = result.html;
+
+            htmlRawBox.textContent = html;
+            htmlPreview.innerHTML = html;
+
+            adjustFontSizeToFit();
+            loader.style.display = 'none';
+            isLoading = false;
+        }
+    });
+
+</script>
+</body>
+</html>
