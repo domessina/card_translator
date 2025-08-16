@@ -34,6 +34,7 @@ function saveAndNext() {
         const img = document.createElement('img');
         img.title = images[currentIndex].name;
         img.src = dataUrl;
+        img.addEventListener("dblclick", () => window.open(dataUrl, "_blank"));
         container.appendChild(img);
 
         const btn = document.createElement('button');

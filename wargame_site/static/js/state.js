@@ -16,11 +16,23 @@ const htmlPreview = document.getElementById('htmlPreview');
 const htmlRawBox = document.getElementById('htmlRawBox');
 const finalPreview = document.getElementById('finalPreview');
 const colorSample = document.getElementById('colorSample');
+const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+const roundedCornersCheckbox = document.getElementById('roundedCorners');
 
 let pipetteActive = false;
 let selectedColor = 'transparent';
 let customColor = false;
 const pipetteCursor = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJibGFjayIgZD0iTTE3IDJsLTIgMiAzIDMtOC41IDguNS0yLTItMiAyIDIgMi00LjUgNC41TDUgMjNsNC41LTQuNSAyIDIgMi0yLTItMkwxOCA4bDMgMyAyLTJ6Ii8+PC9zdmc+';
+function updateFontDisplay() {
+    fontSizeDisplay.textContent = currentFontSize + 'px';
+}
+
+roundedCornersCheckbox.addEventListener('change', () => {
+    const radius = roundedCornersCheckbox.checked ? '8px' : '0';
+    highlightBox.style.borderRadius = radius;
+    htmlPreview.style.borderRadius = radius;
+});
+
 
 function applyFontSettings() {
     htmlPreview.style.fontFamily = currentFont;
@@ -69,3 +81,4 @@ document.getElementById('fontDecrease').addEventListener('click', () => {
     applyFontSettings();
     adjustFontSizeToFit();
 });
+updateFontDisplay();

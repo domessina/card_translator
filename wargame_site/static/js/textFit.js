@@ -11,4 +11,5 @@ function adjustFontSizeToFit() {
         htmlPreview.style.fontSize = fontSize + 'px';
     }
     currentFontSize = fontSize;
+    if (typeof updateFontDisplay === "function") updateFontDisplay();
 }
