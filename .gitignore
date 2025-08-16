@@ -1,3 +1,5 @@
 ./wargame_site/API_KEY.txt
 ./wargame_site/card.png
 ./.idea
+__pycache__/
+*.pyc

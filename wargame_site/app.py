@@ -8,6 +8,11 @@ app = Flask(__name__, static_folder="static")
 def serve_index():
     return send_from_directory('static', 'index.html')
 
+
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    return send_from_directory('static/js', filename)
+
 @app.route('/translate', methods=['POST'])
 def translate_image():
     data = request.json
