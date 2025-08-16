@@ -30,18 +30,22 @@
     <button class="download-all" onclick="downloadAllImages()">📥 Télécharger toutes les images</button>
     <div id="finalPreview" class="horizontal-strip"></div>
 </div>
-<div class="column">
-    <label for="htmlRawBox">Résultat de l'OCR</label>
-    <div id="htmlRawBox" contenteditable="true"></div>
-    <label for="htmlUpload">Importer un html</label>
-    <input type="file" id="htmlUpload" accept=".html" multiple><br><br>
-    <fieldset id="colorFieldset">
+<div class="column right-column">
+    <div class="settings-block">
+        <label for="htmlRawBox">Résultat de l'OCR</label>
+        <div id="htmlRawBox" contenteditable="true"></div>
+    </div>
+    <div class="settings-block">
+        <label for="htmlUpload">Importer un html</label>
+        <input type="file" id="htmlUpload" accept=".html" multiple>
+    </div>
+    <fieldset id="colorFieldset" class="settings-block">
         <legend>Couleur de fond</legend>
         <button onclick="activatePipette()">🧪</button>
         <div id="colorSample"></div>
         <label><input type="checkbox" id="roundedCorners"> Coins arrondis</label>
     </fieldset>
-    <fieldset>
+    <fieldset class="settings-block">
         <legend>Police</legend>
         <input type="file" id="fontUpload" accept=".ttf,.otf,.woff,.woff2">
         <div>
@@ -50,7 +54,7 @@
             <button id="fontIncrease">➕ Taille</button>
         </div>
     </fieldset>
-    <fieldset>
+    <fieldset class="settings-block">
         <legend>Marge entre les paragraphes</legend>
         <button onclick="adjustParagraphMargin(-1)">➖ Marge</button>
         <button onclick="adjustParagraphMargin(1)">➕ Marge</button>
