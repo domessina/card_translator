@@ -2,7 +2,7 @@
 function adjustFontSizeToFit() {
     if (!highlightBox.offsetWidth || !highlightBox.offsetHeight) return;
     const container = highlightBox;
-    let fontSize = 14;
+    let fontSize = currentFontSize;
     htmlPreview.style.fontSize = fontSize + 'px';
     htmlPreview.style.width = '100%';
     htmlPreview.style.height = 'auto';
@@ -10,4 +10,5 @@ function adjustFontSizeToFit() {
         fontSize--;
         htmlPreview.style.fontSize = fontSize + 'px';
     }
+    currentFontSize = fontSize;
 }

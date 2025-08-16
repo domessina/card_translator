@@ -29,6 +29,7 @@ function switchToIndex(idx) {
     highlightBox.style.width = '0px';
     highlightBox.style.height = '0px';
     htmlPreview.innerHTML = '';
+    applyFontSettings();
     if (!customColor) {
         selectedColor = 'transparent';
         htmlPreview.style.backgroundColor = selectedColor;
@@ -70,7 +71,7 @@ function switchToIndex(idx) {
     };
     const url = URL.createObjectURL(images[idx]);
     img.src = url;
-    preview.style.backgroundImage = `url('${url}')`;
+        preview.style.backgroundImage = `url('${url}')`;
     displayRawHtml(idx % htmlFiles.length);
     highlightSelectedImage();
 
@@ -83,6 +84,7 @@ function displayRawHtml(idx) {
     reader.onload = () => {
         htmlRawBox.textContent = reader.result;
         htmlPreview.innerHTML = reader.result;
+        applyFontSettings();
         adjustFontSizeToFit();
     };
     reader.readAsText(htmlFiles[idx]);

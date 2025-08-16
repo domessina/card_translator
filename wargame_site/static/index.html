@@ -172,6 +172,23 @@
             border-radius: 4px;
         }
 
+        input[type="file"]::file-selector-button {
+            background-color: #8b0000;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background-color: #a60000;
+        }
+
+        #fontUpload {
+            margin-bottom: 10px;
+        }
+
         #htmlRawBox {
             background: #1c1c1c;
             color: #c0c0c0;
@@ -342,9 +359,17 @@
     <div id="colorSample"></div>
     <div id="htmlRawBox" contenteditable="true"></div>
     <fieldset>
+        <legend>Police</legend>
+        <input type="file" id="fontUpload" accept=".ttf,.otf,.woff,.woff2">
+        <div>
+            <button id="fontDecrease">➖ Taille</button>
+            <button id="fontIncrease">➕ Taille</button>
+        </div>
+    </fieldset>
+    <fieldset>
         <legend>Marge entre les paragraphes</legend>
-        <button onclick="adjustParagraphMargin(1)">➕ Marge</button>
         <button onclick="adjustParagraphMargin(-1)">➖ Marge</button>
+        <button onclick="adjustParagraphMargin(1)">➕ Marge</button>
     </fieldset>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
