@@ -1,18 +1,20 @@
 # Card Translator
 
 Card Translator is a small Flask web application that uses the OpenAI API to translate the text from wargame card images into any language (French default). The site lets you crop a part of a card, send it to the API for OCR and translation, tweak the styling and download the result as an image.
+Find de images of your game here https://vassalengine.org/library/projects
 
 ## Portable installation
 
 These instructions assume you want to keep the project on a USB drive and run it on different machines without installing anything globally.
 
-1. **Copy the repository** onto your USB key.
-2. **Install Python 3.10+** on each target computer (or carry a portable Python distribution on the USB drive).
+1. **Copy the repository**.
+2. **Install Python 3.10+** https://www.python.org/downloads/windows/  download the exe installer for simplicity.
+   3. Check the PATH option
 3. Open a terminal and create a virtual environment inside the project folder:
    ```bash
    python -m venv venv
    ```
-4. Activate the environment:
+4. Activate the environment (optionnal):
     * On Windows:
       ```bash
       venv\\Scripts\\activate
