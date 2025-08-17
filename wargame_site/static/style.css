@@ -31,6 +31,16 @@
             font-family: Arial, sans-serif;
         }
 
+        @media (max-width: 1200px) {
+            body {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+            }
+            .right-column {
+                grid-column: 1 / -1;
+            }
+        }
+
         @media (max-width: 900px) {
             body {
                 grid-template-columns: 1fr;
@@ -146,6 +156,16 @@
             background-color: #1565c0;
         }
 
+        @media (max-width: 600px) {
+            .button-row {
+                flex-direction: column;
+            }
+            .button-row button,
+            .download-all {
+                width: 100%;
+            }
+        }
+
         /* --- THEME WARGAME --- */
         body {
             background-color: #1e1e1e;
@@ -225,15 +245,13 @@
         .horizontal-strip {
             display: flex;
             flex-direction: row-reverse;
-
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             resize: vertical;
-            min-height: 120px;
             max-height: 60vh;
-            height: 200px;
+            height: 60px;
             background-color: #111;
             overflow-x: auto;
             overflow-y: hidden;

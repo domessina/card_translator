@@ -6,6 +6,7 @@ function resetSelection() {
     highlightBox.style.width = '0px';
     highlightBox.style.height = '0px';
     htmlPreview.innerHTML = '';
+    htmlRawBox.textContent = '';
     applyFontSettings();
     selectedColor = 'transparent';
     customColor = false;

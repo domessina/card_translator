@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Éditeur d'image avec HTML</title>
+    <title>HTML Image Editor</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
 </head>
@@ -21,43 +21,43 @@
         </div>
     </div>
     <div class="button-row">
-        <button onclick="resetSelection()">♻️ Réinitialiser</button>
-        <button onclick="downloadPreview()">💾 Télécharger</button>
+        <button onclick="resetSelection()">♻️ Reset</button>
+        <button onclick="downloadPreview()">💾 Download</button>
     </div>
     <div class="button-row">
-        <button onclick="saveAndNext()">📸 Valider</button>
+        <button onclick="saveAndNext()">📸 Validate</button>
     </div>
-    <button class="download-all" onclick="downloadAllImages()">📥 Télécharger toutes les images</button>
+    <button class="download-all" onclick="downloadAllImages()">📥 Download all images</button>
     <div id="finalPreview" class="horizontal-strip"></div>
 </div>
 <div class="column right-column">
     <div class="settings-block">
-        <label for="htmlRawBox">Résultat de l'OCR</label>
+        <label for="htmlRawBox">OCR Result</label>
         <div id="htmlRawBox" contenteditable="true"></div>
     </div>
     <div class="settings-block">
-        <label for="htmlUpload">Importer un html</label>
+        <label for="htmlUpload">Upload HTML</label>
         <input type="file" id="htmlUpload" accept=".html" multiple>
     </div>
     <fieldset id="colorFieldset" class="settings-block">
-        <legend>Couleur de fond</legend>
+        <legend>Background color</legend>
         <button onclick="activatePipette()">🧪</button>
         <div id="colorSample"></div>
-        <label><input type="checkbox" id="roundedCorners"> Coins arrondis</label>
+        <label><input type="checkbox" id="roundedCorners"> Rounded corners</label>
     </fieldset>
     <fieldset class="settings-block">
-        <legend>Police</legend>
+        <legend>Font</legend>
         <input type="file" id="fontUpload" accept=".ttf,.otf,.woff,.woff2">
         <div>
-            <button id="fontDecrease">➖ Taille</button>
+            <button id="fontDecrease">➖ Size</button>
             <span id="fontSizeDisplay">14px</span>
-            <button id="fontIncrease">➕ Taille</button>
+            <button id="fontIncrease">➕ Size</button>
         </div>
     </fieldset>
     <fieldset class="settings-block">
-        <legend>Marge entre les paragraphes</legend>
-        <button onclick="adjustParagraphMargin(-1)">➖ Marge</button>
-        <button onclick="adjustParagraphMargin(1)">➕ Marge</button>
+        <legend>Paragraph spacing</legend>
+        <button onclick="adjustParagraphMargin(-1)">➖ Spacing</button>
+        <button onclick="adjustParagraphMargin(1)">➕ Spacing</button>
     </fieldset>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
