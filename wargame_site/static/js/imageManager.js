@@ -91,7 +91,6 @@ function displayRawHtml(idx) {
         htmlRawBox.textContent = reader.result;
         htmlPreview.innerHTML = reader.result;
         applyFontSettings();
-        adjustFontSizeToFit();
     };
     reader.readAsText(htmlFiles[idx]);
     document.documentElement.style.setProperty('--p-margin', `${paragraphMargin}px`);

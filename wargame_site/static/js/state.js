@@ -42,7 +42,6 @@ function applyFontSettings() {
 htmlRawBox.addEventListener('input', () => {
     htmlPreview.innerHTML = htmlRawBox.textContent;
     applyFontSettings();
-    adjustFontSizeToFit();
 });
 
 document.getElementById('imageUpload').addEventListener('change', (e) => {
@@ -65,7 +64,6 @@ document.getElementById('fontUpload').addEventListener('change', (e) => {
             document.fonts.add(loaded);
             currentFont = `'${fontName}'`;
             applyFontSettings();
-            adjustFontSizeToFit();
         });
     }
 });
@@ -73,12 +71,12 @@ document.getElementById('fontUpload').addEventListener('change', (e) => {
 document.getElementById('fontIncrease').addEventListener('click', () => {
     currentFontSize++;
     applyFontSettings();
-    adjustFontSizeToFit();
+    updateFontDisplay();
 });
 
 document.getElementById('fontDecrease').addEventListener('click', () => {
     if (currentFontSize > 1) currentFontSize--;
     applyFontSettings();
-    adjustFontSizeToFit();
+    updateFontDisplay();
 });
 updateFontDisplay();

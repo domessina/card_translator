@@ -61,11 +61,9 @@ document.addEventListener('keydown', async (e) => {
         htmlRawBox.textContent = html;
         htmlPreview.innerHTML = html;
         htmlPreview.style.backgroundColor = selectedColor;
-        highlightBox.style.backgroundColor = selectedColor;
+       highlightBox.style.backgroundColor = selectedColor;
         applyFontSettings();
         window.getSelection()?.removeAllRanges();
-
-        adjustFontSizeToFit();
         loader.style.display = 'none';
         document.body.classList.remove('loading');
 
