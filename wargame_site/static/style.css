@@ -27,6 +27,7 @@
             margin: 0;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: 1fr auto;
             height: 100vh;
             font-family: Arial, sans-serif;
         }
@@ -34,7 +35,7 @@
         @media (max-width: 1200px) {
             body {
                 grid-template-columns: 1fr 1fr;
-                grid-template-rows: auto auto;
+                grid-template-rows: 1fr auto auto;
             }
             .right-column {
                 grid-column: 1 / -1;
@@ -44,7 +45,7 @@
         @media (max-width: 900px) {
             body {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto;
+                grid-template-rows: 1fr auto auto auto;
             }
         }
 
@@ -238,37 +239,34 @@
             background-color: #a60000;
         }
 
-        #imageGrid img.selected {
-            border-color: #ff0000;
-        }
-
         .horizontal-strip {
+            grid-column: 1 / -1;
             display: flex;
             flex-direction: row-reverse;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            resize: vertical;
-            max-height: 60vh;
-            height: 60px;
-            background-color: #111;
             overflow-x: auto;
             overflow-y: hidden;
             white-space: nowrap;
+            align-items: flex-start;
+            flex-wrap: nowrap;
             padding: 10px;
+            background-color: #111;
             border-top: 2px solid #444;
             box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.4);
-            z-index: 1000;
+        }
+
+        .horizontal-strip .thumbnail-container {
+            flex: 0 0 auto;
+            margin-right: 10px;
         }
 
         .horizontal-strip img {
-            height: 100%;
-            margin-right: 10px;
-            border: 2px solid #666;
-            border-radius: 4px;
+            height: 180px;
+            width: auto;
+            max-height: 100%;
             object-fit: contain;
             cursor: pointer;
+            border: 2px solid #666;
+            border-radius: 4px;
         }
 
         .spinner {
@@ -311,45 +309,17 @@
             animation: fadeIn 0.3s ease;
         }
 
-        .horizontal-strip {
-            display: flex;
-            flex-direction: row-reverse;
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            align-items: flex-start;
-            flex-wrap: nowrap;
-        }
-
-        .horizontal-strip .thumbnail-container {
-            flex: 0 0 auto;
-            margin-right: 10px;
-        }
-
-        .horizontal-strip img {
-            height: 180px;
-            width: auto;
-            max-height: 100%;
-            object-fit: contain;
-            cursor: pointer;
-        }
-
         #htmlPreview p {
             margin-top: var(--p-margin, 10px);
             margin-bottom: var(--p-margin, 10px);
         }
 
-        #imageGrid {
-            padding-bottom: 220px; /* hauteur de la .horizontal-strip + marge */
-        }
-
         .right-column {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: 100%;
             gap: 20px;
             overflow-y: auto;
-            padding-bottom: 220px; /* hauteur de la .horizontal-strip + marge */
         }
 
         .settings-block {
