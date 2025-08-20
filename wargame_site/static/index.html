@@ -27,6 +27,9 @@
     <div class="button-row">
         <button onclick="saveAndNext()">📸 Validate</button>
     </div>
+    <div class="button-row">
+        <button id="compareBtn">Compare with original</button>
+    </div>
     <button class="download-all" onclick="downloadAllImages()">📥 Download all images</button>
     <div id="finalPreview" class="horizontal-strip"></div>
 </div>
@@ -59,6 +62,21 @@
         <button onclick="adjustParagraphMargin(-1)">➖ Spacing</button>
         <button onclick="adjustParagraphMargin(1)">➕ Spacing</button>
     </fieldset>
+</div>
+<div id="comparisonModal" class="modal">
+    <div class="modal-content">
+        <a href="#" id="closeComparison" class="close-link">close</a>
+        <div class="comparison-container">
+            <div class="comparison-item">
+                <h2>Original</h2>
+                <img id="comparisonOriginal" alt="Original image">
+            </div>
+            <div class="comparison-item">
+                <h2>Translated</h2>
+                <img id="comparisonTranslated" alt="Translated image">
+            </div>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="js/textFit.js"></script>

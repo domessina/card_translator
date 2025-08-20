@@ -83,3 +83,43 @@ function downloadAllImages() {
         link.click();
     });
 }
+
+function showComparison() {
+    if (!images[currentIndex]) return;
+    const originalImg = document.getElementById('comparisonOriginal');
+    const translatedImg = document.getElementById('comparisonTranslated');
+    const modal = document.getElementById('comparisonModal');
+    originalImg.src = URL.createObjectURL(images[currentIndex]);
+
+    const originalBorder = highlightBox.style.border;
+    const previewBorder = preview.style.border;
+    const previewBg = preview.style.backgroundColor;
+
+    highlightBox.style.border = 'none';
+    preview.style.border = 'none';
+    preview.style.backgroundColor = 'transparent';
+
+    html2canvas(preview, { backgroundColor: null }).then(canvas => {
+        highlightBox.style.border = originalBorder;
+        preview.style.border = previewBorder;
+        preview.style.backgroundColor = previewBg;
+
+        translatedImg.src = canvas.toDataURL();
+        modal.style.display = 'flex';
+    });
+}
+
+function closeComparison() {
+    document.getElementById('comparisonModal').style.display = 'none';
+}
+
+document.getElementById('compareBtn').addEventListener('click', showComparison);
+document.getElementById('closeComparison').addEventListener('click', (e) => {
+    e.preventDefault();
+    closeComparison();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeComparison();
+    }
+});
