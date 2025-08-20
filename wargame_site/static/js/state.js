@@ -18,6 +18,7 @@ const finalPreview = document.getElementById('finalPreview');
 const colorSample = document.getElementById('colorSample');
 const fontSizeDisplay = document.getElementById('fontSizeDisplay');
 const roundedCornersCheckbox = document.getElementById('roundedCorners');
+const fontIncreaseButton = document.getElementById('fontIncrease');
 
 let pipetteActive = false;
 let selectedColor = 'transparent';
@@ -25,6 +26,7 @@ let customColor = false;
 const pipetteCursor = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJibGFjayIgZD0iTTE3IDJsLTIgMiAzIDMtOC41IDguNS0yLTItMiAyIDIgMi00LjUgNC41TDUgMjNsNC41LTQuNSAyIDIgMi0yLTItMkwxOCA4bDMgMyAyLTJ6Ii8+PC9zdmc+';
 function updateFontDisplay() {
     fontSizeDisplay.textContent = currentFontSize + 'px';
+    if (typeof updateFontIncreaseState === 'function') updateFontIncreaseState();
 }
 
 roundedCornersCheckbox.addEventListener('change', () => {
@@ -42,6 +44,7 @@ function applyFontSettings() {
 htmlRawBox.addEventListener('input', () => {
     htmlPreview.innerHTML = htmlRawBox.textContent;
     applyFontSettings();
+    adjustFontSizeToFit();
 });
 
 document.getElementById('imageUpload').addEventListener('change', (e) => {
@@ -64,11 +67,12 @@ document.getElementById('fontUpload').addEventListener('change', (e) => {
             document.fonts.add(loaded);
             currentFont = `'${fontName}'`;
             applyFontSettings();
+            adjustFontSizeToFit();
         });
     }
 });
 
-document.getElementById('fontIncrease').addEventListener('click', () => {
+fontIncreaseButton.addEventListener('click', () => {
     currentFontSize++;
     applyFontSettings();
     updateFontDisplay();

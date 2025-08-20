@@ -52,6 +52,7 @@ preview.addEventListener('mousedown', (e) => {
             height: `${h}px`,
             display: 'block'
         });
+        adjustFontSizeToFit();
     }
 
     function onMouseUp() {

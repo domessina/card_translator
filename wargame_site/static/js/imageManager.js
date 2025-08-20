@@ -89,8 +89,9 @@ function displayRawHtml(idx) {
     const reader = new FileReader();
     reader.onload = () => {
         htmlRawBox.textContent = reader.result;
-        htmlPreview.innerHTML = reader.result;
+       htmlPreview.innerHTML = reader.result;
         applyFontSettings();
+        adjustFontSizeToFit();
     };
     reader.readAsText(htmlFiles[idx]);
     document.documentElement.style.setProperty('--p-margin', `${paragraphMargin}px`);
