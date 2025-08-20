@@ -2,12 +2,18 @@
 function downloadPreview() {
     const originalBorder = highlightBox.style.border;
     const originalBg = highlightBox.style.backgroundColor;
+    const previewBorder = preview.style.border;
+    const previewBg = preview.style.backgroundColor;
 
     highlightBox.style.border = 'none';
+    preview.style.border = 'none';
+    preview.style.backgroundColor = 'transparent';
 
-    html2canvas(preview).then(canvas => {
+    html2canvas(preview, { backgroundColor: null }).then(canvas => {
         highlightBox.style.border = originalBorder;
         highlightBox.style.backgroundColor = originalBg;
+        preview.style.border = previewBorder;
+        preview.style.backgroundColor = previewBg;
 
         const link = document.createElement('a');
         link.download = 'preview.png';
@@ -19,12 +25,18 @@ function downloadPreview() {
 function saveAndNext() {
     const wasVisible = highlightBox.style.display;
     const originalBorder = highlightBox.style.border;
+    const previewBorder = preview.style.border;
+    const previewBg = preview.style.backgroundColor;
 
     highlightBox.style.border = 'none';
+    preview.style.border = 'none';
+    preview.style.backgroundColor = 'transparent';
 
-    html2canvas(preview).then(canvas => {
+    html2canvas(preview, { backgroundColor: null }).then(canvas => {
         highlightBox.style.border = originalBorder;
         highlightBox.style.display = wasVisible;
+        preview.style.border = previewBorder;
+        preview.style.backgroundColor = previewBg;
 
         const dataUrl = canvas.toDataURL();
         savedImages.push({ dataUrl, filename: images[currentIndex].name });

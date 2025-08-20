@@ -40,11 +40,16 @@ function switchToIndex(idx) {
         highlightBox.style.backgroundColor = selectedColor;
         colorSample.style.backgroundColor = selectedColor;
     }
+    preview.style.backgroundColor = selectedColor;
 
     const img = new Image();
     img.onload = () => {
-        preview.style.width = img.width + 'px';
-        preview.style.height = img.height + 'px';
+        preview.style.width = '';
+        preview.style.height = '';
+
+        const imageRatio = img.width / img.height;
+        const containerRatio = 63 / 88;
+        preview.style.backgroundSize = imageRatio > containerRatio ? 'contain' : 'cover';
 
         if (!customColor) {
             const canvas = document.createElement('canvas');
@@ -67,6 +72,7 @@ function switchToIndex(idx) {
             htmlPreview.style.backgroundColor = selectedColor;
             highlightBox.style.backgroundColor = selectedColor;
             colorSample.style.backgroundColor = selectedColor;
+            preview.style.backgroundColor = selectedColor;
         }
     };
     const url = URL.createObjectURL(images[idx]);
