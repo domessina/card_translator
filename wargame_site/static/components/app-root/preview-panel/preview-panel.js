@@ -57,9 +57,8 @@ class PreviewPanel extends HTMLElement {
     setBackgroundColor(color, {custom} = {custom: false}) {
         this.selectedColor = color;
         this.customColor = custom;
-        this.htmlPreview.style.backgroundColor = color;
         this.highlightBox.style.backgroundColor = color;
-        this.previewContainer.style.backgroundColor = color;
+        this.htmlPreview.style.backgroundColor = 'transparent';
     }
 
     setBackgroundImage(url, {autoPickColor = true} = {}) {
