@@ -9,13 +9,10 @@ def serve_index():
     return send_from_directory('static', 'index.html')
 
 
-@app.route('/js/<path:filename>')
+@app.route('/components/<path:filename>')
 def serve_js(filename):
-    return send_from_directory('static/js', filename)
+    return send_from_directory('static/components', filename)
 
-@app.route('/style.css')
-def serve_css():
-    return send_from_directory('static', 'style.css')
 
 @app.route('/translate', methods=['POST'])
 def translate_image():

@@ -1,0 +1,95 @@
+:host {
+    display: block;
+}
+
+.column {
+    padding: 10px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background-color: #2c2c2c;
+    border-right: 1px solid #444;
+    height: 100%;
+}
+
+#imageUpload {
+    background-color: #333;
+    color: #ccc;
+    border: 1px solid #555;
+    padding: 6px;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#imageUpload::file-selector-button {
+    background-color: #8b0000;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#imageUpload::file-selector-button:hover {
+    background-color: #a60000;
+}
+
+#gridCounter {
+    font-size: 14px;
+    color: #aaa;
+    margin: 10px 0 4px;
+}
+
+#imageGrid img {
+    max-width: 80px;
+    height: auto;
+    margin: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease;
+}
+
+#imageGrid img.selected {
+    border-color: #ff0000;
+    transform: scale(1.05);
+}
+
+.thumbnail-container {
+    position: relative;
+    display: inline-block;
+    animation: fadeIn 0.3s ease;
+}
+
+.thumbnail-container .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.thumbnail-container:hover .delete-btn {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

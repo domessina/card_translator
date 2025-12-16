@@ -1,0 +1,26 @@
+:host { display: block; }
+
+.controls { display: flex; flex-direction: column; gap: 10px; }
+
+.button-row { display: flex; gap: 10px; justify-content: center; }
+
+.button-row button, .download-all {
+  padding: 10px 18px;
+  font-weight: bold;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #8b0000;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button-row button:hover, .download-all:hover { background-color: #a60000; }
+
+.download-all { align-self: center; }
+
+@media (max-width: 600px) {
+  .button-row { flex-direction: column; }
+  .button-row button, .download-all { width: 100%; }
+}

@@ -4,88 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Image Editor</title>
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-<div class="column">
-    <input type="file" id="imageUpload" accept="image/*" multiple><br><br>
-    <p id="gridCounter" style="font-size: 14px; color: #aaa;"></p>
-    <div id="imageGrid"></div>
-</div>
-<div class="column">
-    <p id="currentFilename" style="text-align: center; font-size: 14px; color: #aaa; margin: 6px 0;"></p>
-    <div id="previewContainer">
-        <div id="highlightBox">
-            <div id="htmlPreview"></div>
-        </div>
-    </div>
-    <div class="button-row">
-        <button onclick="resetSelection()">♻️ Reset</button>
-        <button onclick="downloadPreview()">💾 Download</button>
-    </div>
-    <div class="button-row">
-        <button onclick="saveAndNext()">📸 Validate</button>
-    </div>
-    <div class="button-row">
-        <button id="compareBtn">Compare with original</button>
-    </div>
-    <button class="download-all" onclick="downloadAllImages()">📥 Download all images</button>
-</div>
-<div class="column right-column">
-    <div class="settings-block">
-        <label for="htmlRawBox">OCR Result</label>
-        <div id="htmlRawBox" contenteditable="true"></div>
-    </div>
-    <div class="settings-block">
-        <label for="htmlUpload">Upload HTML</label>
-        <input type="file" id="htmlUpload" accept=".html" multiple>
-    </div>
-    <fieldset id="colorFieldset" class="settings-block">
-        <legend>Background color</legend>
-        <button onclick="activatePipette()">🧪</button>
-        <div id="colorSample"></div>
-        <label><input type="checkbox" id="roundedCorners"> Rounded corners</label>
-    </fieldset>
-    <fieldset class="settings-block">
-        <legend>Font</legend>
-        <input type="file" id="fontUpload" accept=".ttf,.otf,.woff,.woff2">
-        <div>
-            <button id="fontDecrease">➖ Size</button>
-            <span id="fontSizeDisplay">14px</span>
-            <button id="fontIncrease">➕ Size</button>
-        </div>
-    </fieldset>
-    <fieldset class="settings-block">
-        <legend>Paragraph spacing</legend>
-        <button onclick="adjustParagraphMargin(-1)">➖ Spacing</button>
-        <button onclick="adjustParagraphMargin(1)">➕ Spacing</button>
-    </fieldset>
-</div>
-<div id="finalPreview" class="horizontal-strip"></div>
-<div id="comparisonModal" class="modal">
-    <div class="modal-content">
-        <a href="#" id="closeComparison" class="close-link">close</a>
-        <div class="comparison-container">
-            <div class="comparison-item">
-                <h2>Original</h2>
-                <img id="comparisonOriginal" alt="Original image">
-            </div>
-            <div class="comparison-item">
-                <h2>Translated</h2>
-                <img id="comparisonTranslated" alt="Translated image">
-            </div>
-        </div>
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="js/textFit.js"></script>
-<script src="js/state.js"></script>
-<script src="js/margin.js"></script>
-<script src="js/reset.js"></script>
-<script src="js/imageManager.js"></script>
-<script src="js/selection.js"></script>
-<script src="js/export.js"></script>
-<script src="js/translate.js"></script>
+<card-translator-app></card-translator-app>
+<script src="components/app-root/app-root.js" type="module"></script>
 </body>
 </html>

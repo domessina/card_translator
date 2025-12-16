@@ -1,0 +1,30 @@
+<div class="settings">
+    <div class="settings-block">
+        <label for="htmlRawBox">OCR Result</label>
+        <div contenteditable="true" id="htmlRawBox"></div>
+    </div>
+    <div class="settings-block">
+        <label for="htmlUpload">Upload HTML</label>
+        <input accept=".html" id="htmlUpload" multiple type="file">
+    </div>
+    <fieldset class="settings-block" id="colorFieldset">
+        <legend>Background color</legend>
+        <button id="pipetteBtn">🧪</button>
+        <div id="colorSample"></div>
+        <label><input id="roundedCorners" type="checkbox"> Rounded corners</label>
+    </fieldset>
+    <fieldset class="settings-block">
+        <legend>Font</legend>
+        <input accept=".ttf,.otf,.woff,.woff2" id="fontUpload" type="file">
+        <div class="font-row">
+            <button id="fontDecrease">➖ Size</button>
+            <span id="fontSizeDisplay">14px</span>
+            <button id="fontIncrease">➕ Size</button>
+        </div>
+    </fieldset>
+    <fieldset class="settings-block">
+        <legend>Paragraph spacing</legend>
+        <button id="paragraphDec">➖ Spacing</button>
+        <button id="paragraphInc">➕ Spacing</button>
+    </fieldset>
+</div>

@@ -1,0 +1,106 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #2c2c2c;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.settings-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #e0e0e0;
+}
+
+#htmlRawBox {
+    white-space: pre-wrap;
+    background: #1c1c1c;
+    color: #c0c0c0;
+    padding: 10px;
+    font-family: monospace;
+    border: 1px solid #555;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    overflow: auto;
+    max-height: 60vh;
+    border-radius: 4px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#colorFieldset {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#colorFieldset button {
+    background-color: #8b0000;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#colorFieldset button:hover {
+    background-color: #a60000;
+}
+
+#colorSample {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #000;
+}
+
+.font-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.font-row button {
+    background-color: #8b0000;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.font-row button:hover {
+    background-color: #a60000;
+}
+
+#fontSizeDisplay {
+    margin: 0 5px;
+}
+
+#fontUpload, #htmlUpload {
+    background-color: #333;
+    color: #ccc;
+    border: 1px solid #555;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+#fontUpload::file-selector-button, #htmlUpload::file-selector-button {
+    background-color: #8b0000;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#fontUpload::file-selector-button:hover, #htmlUpload::file-selector-button:hover {
+    background-color: #a60000;
+}
