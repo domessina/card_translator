@@ -22,10 +22,21 @@ class PreviewPanel extends HTMLElement {
         this.pipetteActive = false;
         this.backgroundUrl = '';
         this.selection = {startX: 0, startY: 0, width: 0, height: 0};
+        this.resizeObserver = null;
     }
 
     connectedCallback() {
         this.previewContainer.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        this.resizeObserver = new ResizeObserver(() => {
+            if (this.highlightBox.style.display === 'none') return;
+            this.adjustFontSizeToFit();
+            this.dispatchSelection();
+        });
+        this.resizeObserver.observe(this.highlightBox);
+    }
+
+    disconnectedCallback() {
+        this.resizeObserver?.disconnect();
     }
 
     setFilename(name) {
@@ -158,13 +169,22 @@ class PreviewPanel extends HTMLElement {
         this.htmlPreview.style.height = 'auto';
         this.htmlPreview.style.fontSize = `${fontSize}px`;
 
-        while (
-            (this.htmlPreview.scrollHeight > this.highlightBox.clientHeight ||
-                this.htmlPreview.scrollWidth > this.highlightBox.clientWidth) &&
-            fontSize > 6
-            ) {
+        while ((
+            this.htmlPreview.scrollHeight > this.highlightBox.clientHeight ||
+            this.htmlPreview.scrollWidth > this.highlightBox.clientWidth
+        ) && fontSize > 6) {
             fontSize--;
             this.htmlPreview.style.fontSize = `${fontSize}px`;
+        }
+
+        while (fontSize < 300) {
+            const testSize = fontSize + 1;
+            this.htmlPreview.style.fontSize = `${testSize}px`;
+            const fits =
+                this.htmlPreview.scrollHeight <= this.highlightBox.clientHeight &&
+                this.htmlPreview.scrollWidth <= this.highlightBox.clientWidth;
+            if (!fits) break;
+            fontSize = testSize;
         }
 
         this.currentFontSize = fontSize;
