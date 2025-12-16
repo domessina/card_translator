@@ -67,7 +67,6 @@
     border-top-color: #e60000;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin: auto;
 }
 
 .loader-text {
