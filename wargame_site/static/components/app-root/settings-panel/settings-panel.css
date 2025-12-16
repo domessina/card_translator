@@ -1,6 +1,7 @@
 :host {
     display: block;
     height: 100%;
+    font-family: var(--app-font-family, 'Arial', serif);
 }
 
 .settings {
@@ -26,7 +27,7 @@
     background: #1c1c1c;
     color: #c0c0c0;
     padding: 10px;
-    font-family: monospace;
+    font-family: var(--app-font-family, 'Arial', serif);
     border: 1px solid #555;
     overflow-wrap: break-word;
     word-break: break-word;

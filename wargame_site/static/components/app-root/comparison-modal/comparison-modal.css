@@ -1,5 +1,6 @@
 :host {
     display: block;
+    font-family: var(--app-font-family, 'Arial', serif);
 }
 
 .modal {

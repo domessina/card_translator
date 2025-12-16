@@ -1,5 +1,6 @@
 :host {
     display: block;
+    font-family: var(--app-font-family, 'Arial', serif);
 }
 
 .preview-wrapper {
@@ -35,7 +36,7 @@
 }
 
 #htmlPreview {
-    font-family: 'Times New Roman', serif;
+    font-family: var(--app-font-family, 'Arial', serif);
     font-size: 14px;
     word-wrap: break-word;
     overflow: hidden;
