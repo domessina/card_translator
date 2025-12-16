@@ -162,7 +162,7 @@ class PreviewPanel extends HTMLElement {
         }));
     }
 
-    adjustFontSizeToFit() {
+    adjustFontSizeToFit({allowGrow = true} = {}) {
         if (!this.highlightBox.offsetWidth || !this.highlightBox.offsetHeight) return;
         let fontSize = this.currentFontSize;
         this.htmlPreview.style.width = '100%';
@@ -177,14 +177,16 @@ class PreviewPanel extends HTMLElement {
             this.htmlPreview.style.fontSize = `${fontSize}px`;
         }
 
-        while (fontSize < 300) {
-            const testSize = fontSize + 1;
-            this.htmlPreview.style.fontSize = `${testSize}px`;
-            const fits =
-                this.htmlPreview.scrollHeight <= this.highlightBox.clientHeight &&
-                this.htmlPreview.scrollWidth <= this.highlightBox.clientWidth;
-            if (!fits) break;
-            fontSize = testSize;
+        if (allowGrow) {
+            while (fontSize < 300) {
+                const testSize = fontSize + 1;
+                this.htmlPreview.style.fontSize = `${testSize}px`;
+                const fits =
+                    this.htmlPreview.scrollHeight <= this.highlightBox.clientHeight &&
+                    this.htmlPreview.scrollWidth <= this.highlightBox.clientWidth;
+                if (!fits) break;
+                fontSize = testSize;
+            }
         }
 
         this.currentFontSize = fontSize;
@@ -207,7 +209,7 @@ class PreviewPanel extends HTMLElement {
         if (nextSize < 1) return;
         this.currentFontSize = nextSize;
         this.applyFontSettings();
-        this.adjustFontSizeToFit();
+        this.adjustFontSizeToFit({allowGrow: false});
     }
 
     resetSelection() {
