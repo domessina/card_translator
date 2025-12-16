@@ -46,6 +46,7 @@ class CardTranslatorApp extends HTMLElement {
         this.settings.addEventListener('font-file-chosen', (e) => this.loadFont(e.detail.file));
         this.settings.addEventListener('font-size-change', (e) => this.changeFontSize(e.detail.delta));
         this.settings.addEventListener('paragraph-change', (e) => this.adjustParagraphMargin(e.detail.delta));
+        this.settings.addEventListener('translate', () => this.translateSelection());
 
         this.preview.addEventListener('color-auto-picked', (e) => this.setColor(e.detail.color, false));
         this.preview.addEventListener('color-picked', (e) => this.setColor(e.detail.color, true));
@@ -53,6 +54,7 @@ class CardTranslatorApp extends HTMLElement {
 
         this.controls.addEventListener('reset', () => this.resetSelection());
         this.controls.addEventListener('download', () => this.downloadPreview());
+        this.controls.addEventListener('translate', () => this.translateSelection());
         this.controls.addEventListener('validate', () => this.saveAndNext());
         this.controls.addEventListener('compare', () => this.showComparison());
         this.controls.addEventListener('download-all', () => this.downloadAllImages());
@@ -62,7 +64,7 @@ class CardTranslatorApp extends HTMLElement {
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') this.translateSelection();
+            if (e.key === 'Enter' && !e.shiftKey && !this.settings.isHtmlBoxTarget(e.target)) this.translateSelection();
         });
 
         this.applyGlobalFont();

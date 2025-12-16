@@ -15,6 +15,12 @@ class SettingsPanel extends HTMLElement {
   }
 
   connectedCallback() {
+    this.htmlRawBox.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        this.emit('translate');
+      }
+    });
     this.htmlRawBox.addEventListener('input', () => this.emit('html-changed', { html: this.htmlRawBox.textContent }));
     this.shadowRoot.getElementById('htmlUpload').addEventListener('change', (e) => {
       this.emit('html-files-chosen', { files: Array.from(e.target.files) });
@@ -45,6 +51,10 @@ class SettingsPanel extends HTMLElement {
 
   setFontSize(size) {
     this.fontSizeDisplay.textContent = `${size}px`;
+  }
+
+  isHtmlBoxTarget(target) {
+    return target === this.htmlRawBox;
   }
 }
 

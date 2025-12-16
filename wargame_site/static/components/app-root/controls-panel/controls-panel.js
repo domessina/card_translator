@@ -13,6 +13,7 @@ class ControlsPanel extends HTMLElement {
   connectedCallback() {
     this.shadowRoot.getElementById('resetBtn').addEventListener('click', () => this.emit('reset'));
     this.shadowRoot.getElementById('downloadBtn').addEventListener('click', () => this.emit('download'));
+    this.shadowRoot.getElementById('translateBtn').addEventListener('click', () => this.emit('translate'));
     this.shadowRoot.getElementById('validateBtn').addEventListener('click', () => this.emit('validate'));
     this.shadowRoot.getElementById('compareBtn').addEventListener('click', () => this.emit('compare'));
     this.shadowRoot.getElementById('downloadAllBtn').addEventListener('click', () => this.emit('download-all'));
