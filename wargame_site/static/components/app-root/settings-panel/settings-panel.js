@@ -11,6 +11,7 @@ class SettingsPanel extends HTMLElement {
     this.htmlRawBox = this.shadowRoot.getElementById('htmlRawBox');
     this.colorSample = this.shadowRoot.getElementById('colorSample');
     this.roundedCheckbox = this.shadowRoot.getElementById('roundedCorners');
+    this.paddingCheckbox = this.shadowRoot.getElementById('innerPadding');
     this.fontSizeDisplay = this.shadowRoot.getElementById('fontSizeDisplay');
   }
 
@@ -27,6 +28,7 @@ class SettingsPanel extends HTMLElement {
     });
     this.shadowRoot.getElementById('pipetteBtn').addEventListener('click', () => this.emit('pipette-activate'));
     this.roundedCheckbox.addEventListener('change', () => this.emit('rounded-changed', { value: this.roundedCheckbox.checked }));
+    this.paddingCheckbox.addEventListener('change', () => this.emit('padding-changed', { value: this.paddingCheckbox.checked }));
     this.shadowRoot.getElementById('fontUpload').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) this.emit('font-file-chosen', { file });

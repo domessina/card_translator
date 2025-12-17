@@ -22,6 +22,8 @@ class PreviewPanel extends HTMLElement {
         this.pipetteActive = false;
         this.backgroundUrl = '';
         this.selection = {startX: 0, startY: 0, width: 0, height: 0};
+        this.selectionRect = {x: 0, y: 0, width: 0, height: 0};
+        this.currentPadding = 0;
         this.resizeObserver = null;
     }
 
@@ -130,13 +132,8 @@ class PreviewPanel extends HTMLElement {
             const w = Math.abs(currX - this.selection.startX);
             const h = Math.abs(currY - this.selection.startY);
 
-            Object.assign(this.highlightBox.style, {
-                left: `${x}px`,
-                top: `${y}px`,
-                width: `${w}px`,
-                height: `${h}px`,
-                display: 'block'
-            });
+            this.selectionRect = {x, y, width: w, height: h};
+            this.renderSelection();
             this.adjustFontSizeToFit();
             this.dispatchSelection();
         };
@@ -169,9 +166,12 @@ class PreviewPanel extends HTMLElement {
         this.htmlPreview.style.height = 'auto';
         this.htmlPreview.style.fontSize = `${fontSize}px`;
 
+        const availableWidth = Math.max(0, this.highlightBox.clientWidth - this.currentPadding * 2);
+        const availableHeight = Math.max(0, this.highlightBox.clientHeight - this.currentPadding * 2);
+
         while ((
-            this.htmlPreview.scrollHeight > this.highlightBox.clientHeight ||
-            this.htmlPreview.scrollWidth > this.highlightBox.clientWidth
+            this.htmlPreview.scrollHeight > availableHeight ||
+            this.htmlPreview.scrollWidth > availableWidth
         ) && fontSize > 6) {
             fontSize--;
             this.htmlPreview.style.fontSize = `${fontSize}px`;
@@ -182,8 +182,8 @@ class PreviewPanel extends HTMLElement {
                 const testSize = fontSize + 1;
                 this.htmlPreview.style.fontSize = `${testSize}px`;
                 const fits =
-                    this.htmlPreview.scrollHeight <= this.highlightBox.clientHeight &&
-                    this.htmlPreview.scrollWidth <= this.highlightBox.clientWidth;
+                    this.htmlPreview.scrollHeight <= availableHeight &&
+                    this.htmlPreview.scrollWidth <= availableWidth;
                 if (!fits) break;
                 fontSize = testSize;
             }
@@ -197,9 +197,11 @@ class PreviewPanel extends HTMLElement {
         if (!this.highlightBox.offsetWidth || !this.highlightBox.offsetHeight) return true;
         const testSize = this.currentFontSize + 1;
         this.htmlPreview.style.fontSize = `${testSize}px`;
+        const availableWidth = Math.max(0, this.highlightBox.clientWidth - this.currentPadding * 2);
+        const availableHeight = Math.max(0, this.highlightBox.clientHeight - this.currentPadding * 2);
         const fits =
-            this.htmlPreview.scrollHeight <= this.highlightBox.clientHeight &&
-            this.htmlPreview.scrollWidth <= this.highlightBox.clientWidth;
+            this.htmlPreview.scrollHeight <= availableHeight &&
+            this.htmlPreview.scrollWidth <= availableWidth;
         this.htmlPreview.style.fontSize = `${this.currentFontSize}px`;
         return fits;
     }
@@ -218,6 +220,7 @@ class PreviewPanel extends HTMLElement {
         this.highlightBox.style.top = '0px';
         this.highlightBox.style.width = '0px';
         this.highlightBox.style.height = '0px';
+        this.selectionRect = {x: 0, y: 0, width: 0, height: 0};
         this.htmlPreview.innerHTML = '';
         this.applyFontSettings();
         this.selectedColor = 'transparent';
@@ -229,6 +232,30 @@ class PreviewPanel extends HTMLElement {
         const radius = enabled ? '8px' : '0';
         this.highlightBox.style.borderRadius = radius;
         this.htmlPreview.style.borderRadius = radius;
+    }
+
+    setHighlightPadding(enabled) {
+        this.currentPadding = enabled ? 6 : 0;
+        this.highlightBox.style.padding = `${this.currentPadding}px`;
+        if (this.highlightBox.style.display !== 'none') {
+            this.renderSelection();
+            this.adjustFontSizeToFit();
+            this.dispatchSelection();
+        }
+    }
+
+    renderSelection() {
+        const pad = this.currentPadding;
+        const width = Math.max(0, this.selectionRect.width);
+        const height = Math.max(0, this.selectionRect.height);
+        Object.assign(this.highlightBox.style, {
+            left: `${this.selectionRect.x - pad}px`,
+            top: `${this.selectionRect.y - pad}px`,
+            width: `${width}px`,
+            height: `${height}px`,
+            padding: `${pad}px`,
+            display: width && height ? 'block' : 'none'
+        });
     }
 
     activatePipette() {

@@ -43,6 +43,7 @@ class CardTranslatorApp extends HTMLElement {
         this.settings.addEventListener('html-changed', (e) => this.updateHtml(e.detail.html));
         this.settings.addEventListener('pipette-activate', () => this.preview.activatePipette());
         this.settings.addEventListener('rounded-changed', (e) => this.preview.setRoundedCorners(e.detail.value));
+        this.settings.addEventListener('padding-changed', (e) => this.preview.setHighlightPadding(e.detail.value));
         this.settings.addEventListener('font-file-chosen', (e) => this.loadFont(e.detail.file));
         this.settings.addEventListener('font-size-change', (e) => this.changeFontSize(e.detail.delta));
         this.settings.addEventListener('paragraph-change', (e) => this.adjustParagraphMargin(e.detail.delta));
