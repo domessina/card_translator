@@ -223,9 +223,6 @@ class PreviewPanel extends HTMLElement {
         this.selectionRect = {x: 0, y: 0, width: 0, height: 0};
         this.htmlPreview.innerHTML = '';
         this.applyFontSettings();
-        this.selectedColor = 'transparent';
-        this.customColor = false;
-        this.setBackgroundColor('transparent', {custom: false});
     }
 
     setRoundedCorners(enabled) {

@@ -124,7 +124,6 @@ class CardTranslatorApp extends HTMLElement {
     resetSelection() {
         this.preview.resetSelection();
         this.settings.setHtml('');
-        this.setColor('transparent', false);
     }
 
     async downloadPreview() {
@@ -142,6 +141,7 @@ class CardTranslatorApp extends HTMLElement {
         this.savedImages.push({dataUrl, filename});
         this.finalStrip.addThumbnail(dataUrl, filename);
         this.currentIndex++;
+        this.resetSelection();
         if (this.currentIndex < this.images.length) {
             this.switchToIndex(this.currentIndex);
         }
