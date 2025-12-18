@@ -28,6 +28,7 @@ class CardTranslatorApp extends HTMLElement {
         this.persistSelection = false;
         this.savedSelection = null;
         this.isAutoTranslating = false;
+        this.defaultLoaderText = 'Please wait...';
     }
 
     connectedCallback() {
@@ -79,13 +80,15 @@ class CardTranslatorApp extends HTMLElement {
         this.settings.setFontSize(this.currentFontSize);
     }
 
-    showLoader() {
+    showLoader(message = this.defaultLoaderText) {
+        this.setLoaderText(message);
         this.loader.classList.add('active');
         this.isLoading = true;
     }
 
     hideLoader() {
         this.loader.classList.remove('active');
+        this.setLoaderText(this.defaultLoaderText);
         this.isLoading = false;
     }
 
@@ -162,14 +165,22 @@ class CardTranslatorApp extends HTMLElement {
         this.comparisonModal.show(originalUrl, translatedUrl);
     }
 
-    async translateSelection() {
+    setLoaderText(message) {
+        const loaderText = this.loader?.querySelector('.loader-text');
+        if (loaderText) {
+            loaderText.textContent = message;
+        }
+    }
+
+    async translateSelection(options = {}) {
+        const {keepLoaderVisible = false, loaderMessage} = options;
         if (!this.preview.hasSelection() && this.persistSelection) {
             this.applySavedSelectionIfNeeded();
         }
         if (this.isLoading) return;
         const dataUrl = await this.preview.captureSelectionDataUrl();
-        if (!dataUrl) return;
-        this.showLoader();
+        if (!dataUrl) return false;
+        this.showLoader(loaderMessage);
         try {
             const res = await fetch('/translate', {
                 method: 'POST',
@@ -184,8 +195,12 @@ class CardTranslatorApp extends HTMLElement {
             this.preview.applyFontSettings();
             this.preview.adjustFontSizeToFit();
             window.getSelection()?.removeAllRanges();
+            return true;
         } finally {
-            this.hideLoader();
+            this.isLoading = false;
+            if (!keepLoaderVisible) {
+                this.hideLoader();
+            }
         }
     }
 
@@ -273,15 +288,20 @@ class CardTranslatorApp extends HTMLElement {
         this.controls.setAutoTranslateBusy(true);
         try {
             let idx = this.currentIndex;
+            const total = this.images.length;
             while (idx < this.images.length && this.persistSelection && this.savedSelection) {
+                const filename = this.images[idx]?.name || 'Unknown file';
+                const loaderMessage = `Translating ${idx + 1}/${total} · ${filename}`;
                 this.applySavedSelectionIfNeeded();
-                await this.translateSelection();
+                const translated = await this.translateSelection({keepLoaderVisible: true, loaderMessage});
+                if (!translated) break;
                 await this.saveAndNext();
                 idx = this.currentIndex;
             }
         } catch (err) {
             console.error('Auto translate failed', err);
         } finally {
+            this.hideLoader();
             this.isAutoTranslating = false;
             this.controls.setAutoTranslateBusy(false);
             this.syncAutoTranslateAvailability();

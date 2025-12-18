@@ -34,7 +34,7 @@ class ControlsPanel extends HTMLElement {
   setAutoTranslateBusy(isBusy) {
     if (!this.autoTranslateBtn) return;
     this.autoTranslateBtn.disabled = true;
-    this.autoTranslateBtn.textContent = isBusy ? 'Auto-translating…' : 'Auto translate all';
+    this.autoTranslateBtn.textContent = isBusy ? '🤖 Auto-translating…' : '🤖 Auto translate all';
   }
 }
 
