@@ -166,7 +166,10 @@ class PreviewPanel extends HTMLElement {
             this.dispatchEvent(new CustomEvent('font-size-updated', {detail: {size: this.currentFontSize}}));
             return;
         }
-        if (!this.highlightBox.offsetWidth || !this.highlightBox.offsetHeight) return;
+        if (!this.highlightBox.offsetWidth || !this.highlightBox.offsetHeight) {
+            this.dispatchEvent(new CustomEvent('font-size-updated', {detail: {size: this.currentFontSize}}));
+            return;
+        }
         let fontSize = this.currentFontSize;
         this.htmlPreview.style.width = '100%';
         this.htmlPreview.style.height = 'auto';
@@ -216,6 +219,13 @@ class PreviewPanel extends HTMLElement {
         const nextSize = this.currentFontSize + delta;
         if (nextSize < 1) return;
         this.currentFontSize = nextSize;
+        this.applyFontSettings();
+        this.adjustFontSizeToFit({allowGrow: false});
+    }
+
+    setFontSize(size) {
+        if (size < 1) return;
+        this.currentFontSize = size;
         this.applyFontSettings();
         this.adjustFontSizeToFit({allowGrow: false});
     }

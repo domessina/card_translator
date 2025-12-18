@@ -52,13 +52,17 @@ class CardTranslatorApp extends HTMLElement {
         this.settings.addEventListener('selection-persist-change', (e) => this.toggleSelectionPersistence(e.detail.enabled));
         this.settings.addEventListener('font-file-chosen', (e) => this.loadFont(e.detail.file));
         this.settings.addEventListener('font-size-change', (e) => this.changeFontSize(e.detail.delta));
+        this.settings.addEventListener('font-size-set', (e) => this.setFontSize(e.detail.size));
         this.settings.addEventListener('font-size-lock-change', (e) => this.setFontSizeLock(e.detail.locked));
         this.settings.addEventListener('paragraph-change', (e) => this.adjustParagraphMargin(e.detail.delta));
         this.settings.addEventListener('translate', () => this.translateSelection());
 
         this.preview.addEventListener('color-auto-picked', (e) => this.setColor(e.detail.color, false));
         this.preview.addEventListener('color-picked', (e) => this.setColor(e.detail.color, true));
-        this.preview.addEventListener('font-size-updated', (e) => this.settings.setFontSize(e.detail.size));
+        this.preview.addEventListener('font-size-updated', (e) => {
+            this.currentFontSize = e.detail.size;
+            this.settings.setFontSize(e.detail.size);
+        });
         this.preview.addEventListener('selection-updated', () => this.handleSelectionUpdated());
 
         this.controls.addEventListener('reset', () => this.resetSelection());
@@ -236,6 +240,10 @@ class CardTranslatorApp extends HTMLElement {
 
     changeFontSize(delta) {
         this.preview.changeFontSize(delta);
+    }
+
+    setFontSize(size) {
+        this.preview.setFontSize(size);
     }
 
     setFontSizeLock(locked) {

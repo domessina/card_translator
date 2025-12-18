@@ -17,6 +17,7 @@ class SettingsPanel extends HTMLElement {
         this.fontDecreaseBtn = this.shadowRoot.getElementById('fontDecrease');
         this.fontLockCheckbox = this.shadowRoot.getElementById('fontSizeLock');
         this.persistSelectionCheckbox = this.shadowRoot.getElementById('persistSelection');
+        this.lastValidFontSize = parseInt(this.fontSizeDisplay.value, 10) || 14;
     }
 
     connectedCallback() {
@@ -39,6 +40,15 @@ class SettingsPanel extends HTMLElement {
         });
         this.fontIncreaseBtn.addEventListener('click', () => this.emit('font-size-change', { delta: 1 }));
         this.fontDecreaseBtn.addEventListener('click', () => this.emit('font-size-change', { delta: -1 }));
+        this.fontSizeDisplay.addEventListener('change', () => {
+            const value = parseInt(this.fontSizeDisplay.value, 10);
+            if (!Number.isNaN(value) && value > 0) {
+                this.lastValidFontSize = value;
+                this.emit('font-size-set', { size: value });
+            } else {
+                this.fontSizeDisplay.value = this.lastValidFontSize;
+            }
+        });
         this.fontLockCheckbox.addEventListener('change', () => this.emit('font-size-lock-change', { locked: this.fontLockCheckbox.checked }));
         this.shadowRoot.getElementById('paragraphInc').addEventListener('click', () => this.emit('paragraph-change', { delta: 1 }));
         this.shadowRoot.getElementById('paragraphDec').addEventListener('click', () => this.emit('paragraph-change', { delta: -1 }));
@@ -59,7 +69,8 @@ class SettingsPanel extends HTMLElement {
     }
 
     setFontSize(size) {
-        this.fontSizeDisplay.textContent = `${size}px`;
+        this.lastValidFontSize = size;
+        this.fontSizeDisplay.value = size;
     }
 
     setFontLock(locked) {
@@ -79,6 +90,7 @@ class SettingsPanel extends HTMLElement {
     updateFontSizeButtons(disabled) {
         this.fontIncreaseBtn.disabled = disabled;
         this.fontDecreaseBtn.disabled = disabled;
+        this.fontSizeDisplay.disabled = disabled;
     }
 
     isHtmlBoxTarget(target) {

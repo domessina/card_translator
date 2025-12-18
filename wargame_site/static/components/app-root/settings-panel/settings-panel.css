@@ -88,7 +88,16 @@ button:disabled {
 }
 
 #fontSizeDisplay {
-    margin: 0 5px;
+    width: 64px;
+    padding: 6px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+}
+
+.font-size-suffix {
+    color: #ccc;
 }
 
 #fontUpload, #htmlUpload {
