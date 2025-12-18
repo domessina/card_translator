@@ -25,6 +25,9 @@ class CardTranslatorApp extends HTMLElement {
         this.selectedColor = 'transparent';
         this.customColor = false;
         this.isLoading = false;
+        this.persistSelection = false;
+        this.savedSelection = null;
+        this.isAutoTranslating = false;
     }
 
     connectedCallback() {
@@ -44,6 +47,7 @@ class CardTranslatorApp extends HTMLElement {
         this.settings.addEventListener('pipette-activate', () => this.preview.activatePipette());
         this.settings.addEventListener('rounded-changed', (e) => this.preview.setRoundedCorners(e.detail.value));
         this.settings.addEventListener('padding-changed', (e) => this.preview.setHighlightPadding(e.detail.value));
+        this.settings.addEventListener('selection-persist-change', (e) => this.toggleSelectionPersistence(e.detail.enabled));
         this.settings.addEventListener('font-file-chosen', (e) => this.loadFont(e.detail.file));
         this.settings.addEventListener('font-size-change', (e) => this.changeFontSize(e.detail.delta));
         this.settings.addEventListener('paragraph-change', (e) => this.adjustParagraphMargin(e.detail.delta));
@@ -52,6 +56,7 @@ class CardTranslatorApp extends HTMLElement {
         this.preview.addEventListener('color-auto-picked', (e) => this.setColor(e.detail.color, false));
         this.preview.addEventListener('color-picked', (e) => this.setColor(e.detail.color, true));
         this.preview.addEventListener('font-size-updated', (e) => this.settings.setFontSize(e.detail.size));
+        this.preview.addEventListener('selection-updated', () => this.saveCurrentSelection());
 
         this.controls.addEventListener('reset', () => this.resetSelection());
         this.controls.addEventListener('download', () => this.downloadPreview());
@@ -59,6 +64,7 @@ class CardTranslatorApp extends HTMLElement {
         this.controls.addEventListener('validate', () => this.saveAndNext());
         this.controls.addEventListener('compare', () => this.showComparison());
         this.controls.addEventListener('download-all', () => this.downloadAllImages());
+        this.controls.addEventListener('auto-translate', () => this.autoTranslateAll());
 
         this.finalStrip.addEventListener('thumbnail-removed', (e) => {
             this.savedImages = this.savedImages.filter(item => item.dataUrl !== e.detail.dataUrl);
@@ -106,6 +112,7 @@ class CardTranslatorApp extends HTMLElement {
         this.preview.setFilename(this.images[idx].name);
         this.preview.setBackgroundImage(url, {autoPickColor: !this.customColor});
         if (this.htmlFiles.length) this.displayRawHtml(idx % this.htmlFiles.length);
+        this.applySavedSelectionIfNeeded();
     }
 
     displayRawHtml(idx) {
@@ -156,6 +163,9 @@ class CardTranslatorApp extends HTMLElement {
     }
 
     async translateSelection() {
+        if (!this.preview.hasSelection() && this.persistSelection) {
+            this.applySavedSelectionIfNeeded();
+        }
         if (this.isLoading) return;
         const dataUrl = await this.preview.captureSelectionDataUrl();
         if (!dataUrl) return;
@@ -222,6 +232,60 @@ class CardTranslatorApp extends HTMLElement {
         link.href = URL.createObjectURL(content);
         link.download = 'images.zip';
         link.click();
+    }
+
+    toggleSelectionPersistence(enabled) {
+        this.persistSelection = enabled;
+        if (!enabled) {
+            this.savedSelection = null;
+        } else {
+            this.saveCurrentSelection();
+        }
+        this.syncAutoTranslateAvailability();
+    }
+
+    saveCurrentSelection() {
+        if (!this.persistSelection) return;
+        const snapshot = this.preview.getSelectionSnapshot();
+        if (snapshot) {
+            this.savedSelection = snapshot;
+            this.syncAutoTranslateAvailability();
+        }
+    }
+
+    applySavedSelectionIfNeeded() {
+        if (!this.persistSelection || !this.savedSelection) {
+            return false;
+        }
+        this.preview.applySelectionSnapshot(this.savedSelection);
+        return true;
+    }
+
+    syncAutoTranslateAvailability() {
+        const enabled = this.persistSelection && !!this.savedSelection && !this.isAutoTranslating;
+        this.controls.setAutoTranslateEnabled(enabled);
+    }
+
+    async autoTranslateAll() {
+        if (this.isAutoTranslating || !this.persistSelection || !this.savedSelection) return;
+        this.isAutoTranslating = true;
+        this.syncAutoTranslateAvailability();
+        this.controls.setAutoTranslateBusy(true);
+        try {
+            let idx = this.currentIndex;
+            while (idx < this.images.length && this.persistSelection && this.savedSelection) {
+                this.applySavedSelectionIfNeeded();
+                await this.translateSelection();
+                await this.saveAndNext();
+                idx = this.currentIndex;
+            }
+        } catch (err) {
+            console.error('Auto translate failed', err);
+        } finally {
+            this.isAutoTranslating = false;
+            this.controls.setAutoTranslateBusy(false);
+            this.syncAutoTranslateAvailability();
+        }
     }
 }
 

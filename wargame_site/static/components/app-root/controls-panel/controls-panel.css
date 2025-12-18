@@ -31,6 +31,12 @@
     background-color: #a60000;
 }
 
+.button-row button:disabled, .download-all:disabled {
+    background-color: #444;
+    cursor: not-allowed;
+    color: #ccc;
+}
+
 .download-all {
     align-self: center;
 }

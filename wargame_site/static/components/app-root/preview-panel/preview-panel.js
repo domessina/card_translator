@@ -282,6 +282,40 @@ class PreviewPanel extends HTMLElement {
         this.previewContainer.addEventListener('click', clickHandler);
     }
 
+    hasSelection() {
+        return this.selectionRect.width > 0 && this.selectionRect.height > 0;
+    }
+
+    getSelectionSnapshot() {
+        if (!this.hasSelection()) return null;
+        const containerRect = this.previewContainer.getBoundingClientRect();
+        if (!containerRect.width || !containerRect.height) return null;
+        return {
+            rect: {
+                xRatio: this.selectionRect.x / containerRect.width,
+                yRatio: this.selectionRect.y / containerRect.height,
+                widthRatio: this.selectionRect.width / containerRect.width,
+                heightRatio: this.selectionRect.height / containerRect.height
+            }
+        };
+    }
+
+    applySelectionSnapshot(snapshot) {
+        if (!snapshot?.rect) return;
+        const containerRect = this.previewContainer.getBoundingClientRect();
+        if (!containerRect.width || !containerRect.height) return;
+        const {rect} = snapshot;
+        this.selectionRect = {
+            x: rect.xRatio * containerRect.width,
+            y: rect.yRatio * containerRect.height,
+            width: rect.widthRatio * containerRect.width,
+            height: rect.heightRatio * containerRect.height
+        };
+        this.renderSelection();
+        this.adjustFontSizeToFit();
+        this.dispatchSelection();
+    }
+
     async capturePreviewCanvas() {
         const originalBorder = this.highlightBox.style.border;
         const originalBg = this.highlightBox.style.backgroundColor;

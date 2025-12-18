@@ -13,6 +13,7 @@ class SettingsPanel extends HTMLElement {
     this.roundedCheckbox = this.shadowRoot.getElementById('roundedCorners');
     this.paddingCheckbox = this.shadowRoot.getElementById('innerPadding');
     this.fontSizeDisplay = this.shadowRoot.getElementById('fontSizeDisplay');
+    this.persistSelectionCheckbox = this.shadowRoot.getElementById('persistSelection');
   }
 
   connectedCallback() {
@@ -37,6 +38,7 @@ class SettingsPanel extends HTMLElement {
     this.shadowRoot.getElementById('fontDecrease').addEventListener('click', () => this.emit('font-size-change', { delta: -1 }));
     this.shadowRoot.getElementById('paragraphInc').addEventListener('click', () => this.emit('paragraph-change', { delta: 1 }));
     this.shadowRoot.getElementById('paragraphDec').addEventListener('click', () => this.emit('paragraph-change', { delta: -1 }));
+    this.persistSelectionCheckbox.addEventListener('change', () => this.emit('selection-persist-change', { enabled: this.persistSelectionCheckbox.checked }));
   }
 
   emit(name, detail = {}) {

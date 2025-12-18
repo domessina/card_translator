@@ -8,6 +8,7 @@ class ControlsPanel extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(controlsTemplate.content.cloneNode(true));
+    this.autoTranslateBtn = null;
   }
 
   connectedCallback() {
@@ -16,11 +17,24 @@ class ControlsPanel extends HTMLElement {
     this.shadowRoot.getElementById('translateBtn').addEventListener('click', () => this.emit('translate'));
     this.shadowRoot.getElementById('validateBtn').addEventListener('click', () => this.emit('validate'));
     this.shadowRoot.getElementById('compareBtn').addEventListener('click', () => this.emit('compare'));
+    this.autoTranslateBtn = this.shadowRoot.getElementById('autoTranslateBtn');
+    this.autoTranslateBtn.addEventListener('click', () => this.emit('auto-translate'));
     this.shadowRoot.getElementById('downloadAllBtn').addEventListener('click', () => this.emit('download-all'));
   }
 
   emit(name) {
     this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true }));
+  }
+
+  setAutoTranslateEnabled(enabled) {
+    if (!this.autoTranslateBtn) return;
+    this.autoTranslateBtn.disabled = !enabled;
+  }
+
+  setAutoTranslateBusy(isBusy) {
+    if (!this.autoTranslateBtn) return;
+    this.autoTranslateBtn.disabled = true;
+    this.autoTranslateBtn.textContent = isBusy ? 'Auto-translating…' : 'Auto translate all';
   }
 }
 
