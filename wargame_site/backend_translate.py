@@ -1,4 +1,5 @@
 import base64
+
 from openai import OpenAI
 
 # Nom du fichier à lire
@@ -10,7 +11,7 @@ with open(filename, "r", encoding="utf-8") as file:
 client = OpenAI(api_key=contenu)
 
 prompt = """
-Ceci est une carte de jeu wargame.
+Ceci est une carte de jeu wargame. Le contexte est celui d'un jeu de conquistador en amériques
 
 Ta tâche :
 1. Extrais le texte visible sur l’image. Il se peut que le texte soit accompagné de petites images, ignore les.
@@ -19,15 +20,20 @@ Ta tâche :
 - "intelligence" → "renseignement"
 - "step" → "step"
 - "hex" → "hex"
+- "conquistador'→ "conquistador"
 - "hexes" → "hexes"
 - "draw" → "piochez"
+- "discard" → "défaussez"
 - "stack" → "pile"
+- "any" → "un" ou "une" selon le contexte
 4. Garde les acronymes et noms propres inchangés (ex : US, Strategic Agreement, Ledo, Imphal).
 5. Formate uniquement en HTML avec les balises <p>, <b> et <i>. Il est possibe que certains textes soient à la fois <b> et <i>
-6. Si un mot ou une phrase est coloré(e) (par exemple en bleu ou rouge), applique un style inline HTML (style="color:...") sur la balise concernée.
+6. Ne traduis rien qui soit en majuscule. Excepté les premiers mots de phrase.
+7. Si le texte que tu retournes contient encore de l'anglais, force la traduction.
 
 Ne retourne que le HTML final.
 """
+
 
 def process_image_to_html(image_path):
     with open(image_path, "rb") as f:
