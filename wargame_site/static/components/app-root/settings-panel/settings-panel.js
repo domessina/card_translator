@@ -13,6 +13,8 @@ class SettingsPanel extends HTMLElement {
         this.roundedCheckbox = this.shadowRoot.getElementById('roundedCorners');
         this.paddingCheckbox = this.shadowRoot.getElementById('innerPadding');
         this.fontSizeDisplay = this.shadowRoot.getElementById('fontSizeDisplay');
+        this.fontIncreaseBtn = this.shadowRoot.getElementById('fontIncrease');
+        this.fontDecreaseBtn = this.shadowRoot.getElementById('fontDecrease');
         this.fontLockCheckbox = this.shadowRoot.getElementById('fontSizeLock');
         this.persistSelectionCheckbox = this.shadowRoot.getElementById('persistSelection');
     }
@@ -35,12 +37,13 @@ class SettingsPanel extends HTMLElement {
             const file = e.target.files[0];
             if (file) this.emit('font-file-chosen', { file });
         });
-        this.shadowRoot.getElementById('fontIncrease').addEventListener('click', () => this.emit('font-size-change', { delta: 1 }));
-        this.shadowRoot.getElementById('fontDecrease').addEventListener('click', () => this.emit('font-size-change', { delta: -1 }));
+        this.fontIncreaseBtn.addEventListener('click', () => this.emit('font-size-change', { delta: 1 }));
+        this.fontDecreaseBtn.addEventListener('click', () => this.emit('font-size-change', { delta: -1 }));
         this.fontLockCheckbox.addEventListener('change', () => this.emit('font-size-lock-change', { locked: this.fontLockCheckbox.checked }));
         this.shadowRoot.getElementById('paragraphInc').addEventListener('click', () => this.emit('paragraph-change', { delta: 1 }));
         this.shadowRoot.getElementById('paragraphDec').addEventListener('click', () => this.emit('paragraph-change', { delta: -1 }));
         this.persistSelectionCheckbox.addEventListener('change', () => this.emit('selection-persist-change', { enabled: this.persistSelectionCheckbox.checked }));
+        this.updateFontSizeButtons(this.fontLockCheckbox.checked);
     }
 
     emit(name, detail = {}) {
@@ -61,6 +64,12 @@ class SettingsPanel extends HTMLElement {
 
     setFontLock(locked) {
         this.fontLockCheckbox.checked = locked;
+        this.updateFontSizeButtons(locked);
+    }
+
+    updateFontSizeButtons(disabled) {
+        this.fontIncreaseBtn.disabled = disabled;
+        this.fontDecreaseBtn.disabled = disabled;
     }
 
     isHtmlBoxTarget(target) {
