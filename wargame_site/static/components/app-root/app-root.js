@@ -59,7 +59,7 @@ class CardTranslatorApp extends HTMLElement {
         this.preview.addEventListener('color-auto-picked', (e) => this.setColor(e.detail.color, false));
         this.preview.addEventListener('color-picked', (e) => this.setColor(e.detail.color, true));
         this.preview.addEventListener('font-size-updated', (e) => this.settings.setFontSize(e.detail.size));
-        this.preview.addEventListener('selection-updated', () => this.saveCurrentSelection());
+        this.preview.addEventListener('selection-updated', () => this.handleSelectionUpdated());
 
         this.controls.addEventListener('reset', () => this.resetSelection());
         this.controls.addEventListener('download', () => this.downloadPreview());
@@ -80,6 +80,7 @@ class CardTranslatorApp extends HTMLElement {
         this.applyGlobalFont();
         this.preview.setParagraphMargin(this.paragraphMargin);
         this.settings.setFontSize(this.currentFontSize);
+        this.updatePersistSelectionAvailability();
     }
 
     showLoader(message = this.defaultLoaderText) {
@@ -118,6 +119,7 @@ class CardTranslatorApp extends HTMLElement {
         this.preview.setBackgroundImage(url, {autoPickColor: !this.customColor});
         if (this.htmlFiles.length) this.displayRawHtml(idx % this.htmlFiles.length);
         this.applySavedSelectionIfNeeded();
+        this.updatePersistSelectionAvailability();
     }
 
     displayRawHtml(idx) {
@@ -136,6 +138,7 @@ class CardTranslatorApp extends HTMLElement {
     resetSelection() {
         this.preview.resetSelection();
         this.settings.setHtml('');
+        this.updatePersistSelectionAvailability();
     }
 
     async downloadPreview() {
@@ -146,14 +149,17 @@ class CardTranslatorApp extends HTMLElement {
         link.click();
     }
 
-    async saveAndNext() {
+    async saveAndNext(options = {}) {
+        const {preserveSelection = false} = options;
         const canvas = await this.preview.capturePreviewCanvas();
         const dataUrl = canvas.toDataURL();
         const filename = this.images[this.currentIndex]?.name || 'preview.png';
         this.savedImages.push({dataUrl, filename});
         this.finalStrip.addThumbnail(dataUrl, filename);
         this.currentIndex++;
-        this.resetSelection();
+        if (!preserveSelection) {
+            this.resetSelection();
+        }
         if (this.currentIndex < this.images.length) {
             this.switchToIndex(this.currentIndex);
         }
@@ -258,13 +264,13 @@ class CardTranslatorApp extends HTMLElement {
     }
 
     toggleSelectionPersistence(enabled) {
-        this.persistSelection = enabled;
-        if (!enabled) {
+        this.persistSelection = enabled && this.preview.hasSelection();
+        if (!this.persistSelection) {
             this.savedSelection = null;
         } else {
             this.saveCurrentSelection();
         }
-        this.syncAutoTranslateAvailability();
+        this.updatePersistSelectionAvailability();
     }
 
     saveCurrentSelection() {
@@ -272,7 +278,6 @@ class CardTranslatorApp extends HTMLElement {
         const snapshot = this.preview.getSelectionSnapshot();
         if (snapshot) {
             this.savedSelection = snapshot;
-            this.syncAutoTranslateAvailability();
         }
     }
 
@@ -281,12 +286,36 @@ class CardTranslatorApp extends HTMLElement {
             return false;
         }
         this.preview.applySelectionSnapshot(this.savedSelection);
+        this.updatePersistSelectionAvailability();
         return true;
     }
 
     syncAutoTranslateAvailability() {
-        const enabled = this.persistSelection && !!this.savedSelection && !this.isAutoTranslating;
+        const hasSelection = this.preview.hasSelection();
+        const enabled = this.persistSelection && hasSelection && !!this.savedSelection && !this.isAutoTranslating;
         this.controls.setAutoTranslateEnabled(enabled);
+    }
+
+    updatePersistSelectionAvailability() {
+        const hasSelection = this.preview.hasSelection();
+        if (!hasSelection) {
+            this.persistSelection = false;
+            this.savedSelection = null;
+        }
+        this.settings.setPersistSelectionState({
+            disabled: !hasSelection,
+            checked: this.persistSelection && hasSelection
+        });
+        this.syncAutoTranslateAvailability();
+    }
+
+    handleSelectionUpdated() {
+        if (this.persistSelection && this.preview.hasSelection()) {
+            this.saveCurrentSelection();
+        } else if (!this.preview.hasSelection()) {
+            this.savedSelection = null;
+        }
+        this.updatePersistSelectionAvailability();
     }
 
     async autoTranslateAll() {
@@ -303,7 +332,7 @@ class CardTranslatorApp extends HTMLElement {
                 this.applySavedSelectionIfNeeded();
                 const translated = await this.translateSelection({keepLoaderVisible: true, loaderMessage});
                 if (!translated) break;
-                await this.saveAndNext();
+                await this.saveAndNext({preserveSelection: true});
                 idx = this.currentIndex;
             }
         } catch (err) {

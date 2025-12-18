@@ -67,6 +67,15 @@ class SettingsPanel extends HTMLElement {
         this.updateFontSizeButtons(locked);
     }
 
+    setPersistSelectionState({checked, disabled}) {
+        if (checked !== undefined) {
+            this.persistSelectionCheckbox.checked = checked;
+        }
+        if (disabled !== undefined) {
+            this.persistSelectionCheckbox.disabled = disabled;
+        }
+    }
+
     updateFontSizeButtons(disabled) {
         this.fontIncreaseBtn.disabled = disabled;
         this.fontDecreaseBtn.disabled = disabled;
