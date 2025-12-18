@@ -1,6 +1,7 @@
 # Card Translator
 
-Card Translator is a small Flask web application that uses the OpenAI API to translate the text from wargame card images
+Card Translator is a small Flask web application that uses the OpenAI API to translate the text from simple boardgame
+card images
 into any language (French default). The site lets you crop a part of a card, send it to the API for OCR and translation,
 tweak the styling and download the result as an image.
 Find de images of your game here https://vassalengine.org/library/projects
