@@ -81,6 +81,12 @@
     background-color: #a60000;
 }
 
+button:disabled {
+    background-color: var(--button-disabled-bg, #444);
+    color: var(--button-disabled-color, #ccc);
+    cursor: not-allowed;
+}
+
 #fontSizeDisplay {
     margin: 0 5px;
 }

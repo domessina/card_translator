@@ -31,10 +31,10 @@
     background-color: #a60000;
 }
 
-.button-row button:disabled, .download-all:disabled {
-    background-color: #444;
+button:disabled {
+    background-color: var(--button-disabled-bg, #444);
     cursor: not-allowed;
-    color: #ccc;
+    color: var(--button-disabled-color, #ccc);
 }
 
 .download-all {

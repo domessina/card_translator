@@ -4,6 +4,8 @@
     background-color: #1e1e1e;
     min-height: 100vh;
     font-family: var(--app-font-family, 'Arial', serif);
+    --button-disabled-bg: #444;
+    --button-disabled-color: #ccc;
 }
 
 .layout {
