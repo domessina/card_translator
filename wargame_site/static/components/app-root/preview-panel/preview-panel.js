@@ -16,6 +16,7 @@ class PreviewPanel extends HTMLElement {
         this.filenameLabel = this.shadowRoot.getElementById('currentFilename');
         this.currentFont = "'Arial', serif";
         this.currentFontSize = 14;
+        this.fontSizeLocked = false;
         this.paragraphMargin = 10;
         this.selectedColor = 'transparent';
         this.customColor = false;
@@ -160,6 +161,11 @@ class PreviewPanel extends HTMLElement {
     }
 
     adjustFontSizeToFit({allowGrow = true} = {}) {
+        if (this.fontSizeLocked) {
+            this.applyFontSettings();
+            this.dispatchEvent(new CustomEvent('font-size-updated', {detail: {size: this.currentFontSize}}));
+            return;
+        }
         if (!this.highlightBox.offsetWidth || !this.highlightBox.offsetHeight) return;
         let fontSize = this.currentFontSize;
         this.htmlPreview.style.width = '100%';
@@ -212,6 +218,16 @@ class PreviewPanel extends HTMLElement {
         this.currentFontSize = nextSize;
         this.applyFontSettings();
         this.adjustFontSizeToFit({allowGrow: false});
+    }
+
+    setFontSizeLock(locked) {
+        this.fontSizeLocked = locked;
+        if (locked) {
+            this.applyFontSettings();
+            this.dispatchEvent(new CustomEvent('font-size-updated', {detail: {size: this.currentFontSize}}));
+        } else {
+            this.adjustFontSizeToFit();
+        }
     }
 
     resetSelection() {

@@ -28,6 +28,7 @@ class CardTranslatorApp extends HTMLElement {
         this.persistSelection = false;
         this.savedSelection = null;
         this.isAutoTranslating = false;
+        this.fontSizeLocked = false;
         this.defaultLoaderText = 'Please wait...';
     }
 
@@ -51,6 +52,7 @@ class CardTranslatorApp extends HTMLElement {
         this.settings.addEventListener('selection-persist-change', (e) => this.toggleSelectionPersistence(e.detail.enabled));
         this.settings.addEventListener('font-file-chosen', (e) => this.loadFont(e.detail.file));
         this.settings.addEventListener('font-size-change', (e) => this.changeFontSize(e.detail.delta));
+        this.settings.addEventListener('font-size-lock-change', (e) => this.setFontSizeLock(e.detail.locked));
         this.settings.addEventListener('paragraph-change', (e) => this.adjustParagraphMargin(e.detail.delta));
         this.settings.addEventListener('translate', () => this.translateSelection());
 
@@ -228,6 +230,12 @@ class CardTranslatorApp extends HTMLElement {
 
     changeFontSize(delta) {
         this.preview.changeFontSize(delta);
+    }
+
+    setFontSizeLock(locked) {
+        this.fontSizeLocked = locked;
+        this.settings.setFontLock(locked);
+        this.preview.setFontSizeLock(locked);
     }
 
     adjustParagraphMargin(delta) {

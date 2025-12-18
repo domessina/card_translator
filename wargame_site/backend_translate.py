@@ -30,6 +30,7 @@ Ta tâche :
 5. Formate uniquement en HTML avec les balises <p>, <b> et <i>. Il est possibe que certains textes soient à la fois <b> et <i>
 6. Ne traduis rien qui soit en majuscule. Excepté les premiers mots de phrase.
 7. Si le texte que tu retournes contient encore de l'anglais, force la traduction.
+8. Une phrase ne doit pas commencer par "..."
 
 Ne retourne que le HTML final.
 """
