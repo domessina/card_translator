@@ -17,7 +17,8 @@ class SettingsPanel extends HTMLElement {
         this.fontDecreaseBtn = this.shadowRoot.getElementById('fontDecrease');
         this.fontLockCheckbox = this.shadowRoot.getElementById('fontSizeLock');
         this.persistSelectionCheckbox = this.shadowRoot.getElementById('persistSelection');
-        this.lastValidFontSize = parseInt(this.fontSizeDisplay.value, 10) || 14;
+        const initialFontSize = parseInt(this.fontSizeDisplay.value, 10);
+        this.lastValidFontSize = Number.isNaN(initialFontSize) ? 14 : initialFontSize;
     }
 
     connectedCallback() {
@@ -42,7 +43,7 @@ class SettingsPanel extends HTMLElement {
         this.fontDecreaseBtn.addEventListener('click', () => this.emit('font-size-change', { delta: -1 }));
         this.fontSizeDisplay.addEventListener('change', () => {
             const value = parseInt(this.fontSizeDisplay.value, 10);
-            if (!Number.isNaN(value) && value > 0) {
+            if (!Number.isNaN(value) && value >= 0) {
                 this.lastValidFontSize = value;
                 this.emit('font-size-set', { size: value });
             } else {

@@ -217,14 +217,14 @@ class PreviewPanel extends HTMLElement {
 
     changeFontSize(delta) {
         const nextSize = this.currentFontSize + delta;
-        if (nextSize < 1) return;
+        if (nextSize < 0) return;
         this.currentFontSize = nextSize;
         this.applyFontSettings();
         this.adjustFontSizeToFit({allowGrow: false});
     }
 
     setFontSize(size) {
-        if (size < 1) return;
+        if (size < 0) return;
         this.currentFontSize = size;
         this.applyFontSettings();
         this.adjustFontSizeToFit({allowGrow: false});
